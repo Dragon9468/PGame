@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PGame - Hồi Sinh Kỷ Nguyên Web Game Huyền Thoại | PGame.dragon9468.com</title>
+  <meta name="description" content="PGame - Nền tảng web game hồi sinh thời kỳ hoàng kim Zing Me, GameVui, Flash Games. Chơi ngay trên trình duyệt, không cần cài đặt hoặc tải APK/EXE cho Mobile và PC.">
+  <meta name="theme-color" content="#6366f1">
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Ruffle Flash WASM Player CDN -->
+  <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --bg-card: #111827;
+      --bg-card-hover: #1f293d;
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --accent: #f43f5e;
+      --accent-glow: rgba(244, 63, 94, 0.4);
+      --gold: #fbbf24;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #1e293b;
+      --glass: rgba(17, 24, 39, 0.85);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    h1, h2, h3, h4, .brand-font {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    /* Ambient Background Glow */
+    .ambient-glow {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100vw;
+      height: 600px;
+      background: radial-gradient(circle at 50% 10%, rgba(99, 102, 241, 0.18), transparent 70%),
+                  radial-gradient(circle at 80% 30%, rgba(244, 63, 94, 0.12), transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Header / Navbar */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: var(--glass);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .navbar {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .logo-badge {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #6366f1, #f43f5e);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 900;
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+    }
+
+    .logo-text h1 {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(90deg, #fff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.1;
+    }
+
+    .logo-text span {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #818cf8;
+      display: block;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #818cf8);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+    }
+
+    .btn-accent {
+      background: linear-gradient(135deg, #f43f5e, #fb7185);
+      color: #fff;
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    .btn-accent:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(244, 63, 94, 0.6);
+    }
+
+    .btn-glass {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-main);
+      border: 1px solid var(--glass-border);
+    }
+
+    .btn-glass:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateY(-1px);
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      max-width: 1300px;
+      margin: 30px auto;
+      padding: 0 24px;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.95));
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 48px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      align-items: center;
+      gap: 40px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    .hero-card::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.25), transparent 70%);
+      pointer-events: none;
+    }
+
+    .tag-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      color: #a5b4fc;
+      padding: 6px 14px;
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .hero-content h2 {
+      font-size: 44px;
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 18px;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-content p {
+      color: var(--text-muted);
+      font-size: 16px;
+      margin-bottom: 28px;
+      max-width: 540px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .hero-preview {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+      aspect-ratio: 16/9;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .hero-preview:hover img {
+      transform: scale(1.05);
+    }
+
+    .play-overlay-btn {
+      position: absolute;
+      width: 68px;
+      height: 68px;
+      background: rgba(244, 63, 94, 0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #fff;
+      box-shadow: 0 0 30px rgba(244, 63, 94, 0.8);
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .play-overlay-btn:hover {
+      transform: scale(1.15);
+      background: #f43f5e;
+    }
+
+    /* Section Headers */
+    .section-wrap {
+      max-width: 1300px;
+      margin: 50px auto;
+      padding: 0 24px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 28px;
+    }
+
+    .section-title h3 {
+      font-size: 28px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title h3 i {
+      color: var(--accent);
+    }
+
+    .section-title p {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    /* Game Cards Grid */
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .game-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .game-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .game-thumb {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/10;
+      background: #1a2234;
+      overflow: hidden;
+    }
+
+    .game-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .game-card:hover .game-thumb img {
+      transform: scale(1.08);
+    }
+
+    .status-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(16, 185, 129, 0.9);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-badge.coming-soon {
+      background: rgba(148, 163, 184, 0.8);
+    }
+
+    .game-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .game-category {
+      font-size: 12px;
+      color: #818cf8;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .game-title {
+      font-size: 19px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .game-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      flex-grow: 1;
+    }
+
+    .game-footer {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .game-footer .btn {
+      flex: 1;
+      justify-content: center;
+      padding: 8px 14px;
+      font-size: 13px;
+    }
+
+    /* Modal Player & Download */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 8, 15, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      padding: 16px;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-box {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      width: 100%;
+      max-width: 1050px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .modal-title h4 {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .close-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .close-btn:hover {
+      background: #f43f5e;
+      color: #fff;
+    }
+
+    /* Player Container */
+    .player-frame {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #000;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #game-canvas-container {
+      width: 100%;
+      height: 100%;
+    }
+
+    #game-canvas-container ruffle-player {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    .player-controls {
+      padding: 14px 24px;
+      background: #0b1120;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Download Modal */
+    .download-modal-content {
+      padding: 32px;
+      text-align: center;
+    }
+
+    .download-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 24px;
+      text-align: left;
+    }
+
+    .download-option {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .download-option:hover {
+      border-color: var(--primary);
+      background: rgba(99, 102, 241, 0.05);
+    }
+
+    .download-option .icon {
+      font-size: 32px;
+      color: #818cf8;
+    }
+
+    .qr-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .qr-box {
+      background: #fff;
+      padding: 12px;
+      border-radius: 12px;
+      margin: 12px 0;
+    }
+
+    .qr-box img {
+      width: 150px;
+      height: 150px;
+      display: block;
+    }
+
+    /* Footer */
+    footer {
+      background: #070b12;
+      border-top: 1px solid var(--border);
+      padding: 40px 24px;
+      margin-top: 80px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    footer p a {
+      color: #818cf8;
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .hero-card {
+        grid-template-columns: 1fr;
+        padding: 30px 20px;
+      }
+      .hero-content h2 {
+        font-size: 32px;
+      }
+      .download-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="navbar">
+      <a href="#" class="logo-container">
+        <div class="logo-badge">P</div>
+        <div class="logo-text">
+          <h1>PGame</h1>
+          <span>Web Game Platform</span>
+        </div>
+      </a>
+
+      <div class="nav-actions">
+        <button id="pwa-install-btn" class="btn btn-glass" style="display: none;" onclick="installPWA()">
+          <i class="fa-solid fa-mobile-screen-button"></i> Cài App (PWA)
+        </button>
+        <a href="#games-list" class="btn btn-glass">
+          <i class="fa-solid fa-gamepad"></i> Kho Game
+        </a>
+        <a href="https://github.com/Dragon9468/PGame" target="_blank" class="btn btn-primary">
+          <i class="fa-brands fa-github"></i> GitHub
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero: Featured Game (Đế chế GameVui Remake) -->
+  <section class="hero">
+    <div class="hero-card">
+      <div class="hero-content">
+        <div class="tag-badge">
+          <i class="fa-solid fa-fire"></i> Game Tâm Điểm • Remake v2.0
+        </div>
+        <h2>Đế Chế GameVui:<br>The Imperium Remake</h2>
+        <p>Hồi sinh huyền thoại chiến thuật thời gian thực Flash GameVui! Đã được Việt Hóa 100%, nâng cấp cơ chế AI 4 độ khó, mở khóa viện trợ người & cân bằng kinh tế thị trường.</p>
+        
+        <div class="hero-actions">
+          <button class="btn btn-accent" onclick="openGame('deche')">
+            <i class="fa-solid fa-play"></i> CHƠI NGAY TRÊN WEB
+          </button>
+          <button class="btn btn-glass" onclick="openDownloadModal('deche')">
+            <i class="fa-solid fa-download"></i> Tải Cho Mobile / PC
+          </button>
+        </div>
+      </div>
+
+      <div class="hero-preview" onclick="openGame('deche')">
+        <img src="games/deche/icon.png" alt="Đế Chế GameVui">
+        <div class="play-overlay-btn">
+          <i class="fa-solid fa-play"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Games Library -->
+  <section class="section-wrap" id="games-list">
+    <div class="section-title">
+      <div>
+        <h3><i class="fa-solid fa-shapes"></i> Danh Sách Web Game</h3>
+        <p>Hồi sinh những ký ức tuổi thơ Zing Me, GameVui, 24h & Flash bất hủ.</p>
+      </div>
+    </div>
+
+    <div class="games-grid">
+      <!-- Game 1: Đế Chế GameVui -->
+      <div class="game-card">
+        <div class="game-thumb">
+          <img src="games/deche/icon.png" alt="Đế chế GameVui">
+          <span class="status-badge">Đang Hoạt Động</span>
+        </div>
+        <div class="game-body">
+          <span class="game-category">Chiến Thuật / Thời Gian Thực</span>
+          <h4 class="game-title">Đế Chế GameVui (The Imperium)</h4>
+          <p class="game-desc">Bản Remake Tiếng Việt, mod gameplay 3 phe, cơ chế chuyển dân & cân bằng độ khó logic.</p>
+          <div class="game-footer">
+            <button class="btn btn-accent" onclick="openGame('deche')">
+              <i class="fa-solid fa-play"></i> Chơi Ngay
+            </button>
+            <button class="btn btn-glass" onclick="openDownloadModal('deche')">
+              <i class="fa-solid fa-download"></i> Tải Về
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game 2: Nông Trại Vui Vẻ Remake (Coming Soon) -->
+      <div class="game-card">
+        <div class="game-thumb">
+          <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #059669, #10b981); display: flex; align-items: center; justify-content: center; font-size: 40px; color: #fff;">
+            <i class="fa-solid fa-seedling"></i>
+          </div>
+          <span class="status-badge coming-soon">Sắp Ra Mắt</span>
+        </div>
+        <div class="game-body">
+          <span class="game-category">Nông Trại / Mô Phỏng</span>
+          <h4 class="game-title">Nông Trại Vui Vẻ (Happy Farm)</h4>
+          <p class="game-desc">Tựa game trồng cây, bắt sâu, trộm nông sản huyền thoại từng khuấy đảo thời Zing Me.</p>
+          <div class="game-footer">
+            <button class="btn btn-glass" disabled style="opacity: 0.6; cursor: not-allowed;">
+              <i class="fa-solid fa-clock"></i> Đang Phát Triển
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game 3: Hàng Rong Zing Me (Coming Soon) -->
+      <div class="game-card">
+        <div class="game-thumb">
+          <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #d97706, #f59e0b); display: flex; align-items: center; justify-content: center; font-size: 40px; color: #fff;">
+            <i class="fa-solid fa-store"></i>
+          </div>
+          <span class="status-badge coming-soon">Sắp Ra Mắt</span>
+        </div>
+        <div class="game-body">
+          <span class="game-category">Kinh Doanh / Đường Phố</span>
+          <h4 class="game-title">Hàng Rong Online</h4>
+          <p class="game-desc">Trải nghiệm bán hàng vỉa hè, canh chừng công an, nâng cấp sạp hàng độc nhất vô nhị.</p>
+          <div class="game-footer">
+            <button class="btn btn-glass" disabled style="opacity: 0.6; cursor: not-allowed;">
+              <i class="fa-solid fa-clock"></i> Đang Phát Triển
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game 4: Khu Vườn Trên Mây (Coming Soon) -->
+      <div class="game-card">
+        <div class="game-thumb">
+          <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #2563eb, #38bdf8); display: flex; align-items: center; justify-content: center; font-size: 40px; color: #fff;">
+            <i class="fa-solid fa-cloud"></i>
+          </div>
+          <span class="status-badge coming-soon">Sắp Ra Mắt</span>
+        </div>
+        <div class="game-body">
+          <span class="game-category">Mô Phỏng / Thư Giãn</span>
+          <h4 class="game-title">Khu Vườn Trên Mây</h4>
+          <p class="game-desc">Trồng các loài hoa thần tiên trên các tầng mây ngũ sắc cùng chú đậu thần Jack.</p>
+          <div class="game-footer">
+            <button class="btn btn-glass" disabled style="opacity: 0.6; cursor: not-allowed;">
+              <i class="fa-solid fa-clock"></i> Đang Phát Triển
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Game Player Modal -->
+  <div id="player-modal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fa-solid fa-gamepad" style="color: var(--primary);"></i>
+          <h4 id="modal-game-title">Đang chơi game...</h4>
+        </div>
+        <div class="close-btn" onclick="closeGameModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+      </div>
+
+      <div class="player-frame">
+        <div id="game-canvas-container"></div>
+      </div>
+
+      <div class="player-controls">
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-glass" onclick="toggleFullscreen()">
+            <i class="fa-solid fa-expand"></i> Toàn Màn Hình
+          </button>
+          <button class="btn btn-glass" onclick="reloadCurrentGame()">
+            <i class="fa-solid fa-rotate-right"></i> Tải Lại
+          </button>
+        </div>
+        <div>
+          <button class="btn btn-accent" onclick="openDownloadModal('deche')">
+            <i class="fa-solid fa-download"></i> Tải Game Về Máy
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Download & QR Modal -->
+  <div id="download-modal" class="modal-backdrop">
+    <div class="modal-box" style="max-width: 750px;">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fa-solid fa-download" style="color: var(--accent);"></i>
+          <h4>Tải Game & Quét Mã QR</h4>
+        </div>
+        <div class="close-btn" onclick="closeDownloadModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+      </div>
+
+      <div class="download-modal-content">
+        <h3 style="font-size: 22px; margin-bottom: 6px;">Đế Chế GameVui - The Imperium Remake</h3>
+        <p style="color: var(--text-muted); font-size: 14px;">Chơi trực tiếp không cần mạng hoặc cài đặt ứng dụng riêng biệt tiện lợi.</p>
+
+        <div class="download-grid">
+          <!-- Mobile & QR -->
+          <div class="qr-card">
+            <i class="fa-solid fa-mobile-screen-button" style="font-size: 24px; color: #818cf8;"></i>
+            <span style="font-weight: 700; margin-top: 6px; font-size: 15px;">Chơi Trên Mobile (Android / iOS)</span>
+            <div class="qr-box">
+              <img id="qr-code-img" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://pgame.dragon9468.com" alt="QR Code">
+            </div>
+            <span style="font-size: 12px; color: var(--text-muted);">Quét mã để mở và chọn "Thêm vào màn hình chính" (PWA)</span>
+            <a id="apk-download-btn" href="https://github.com/Dragon9468/Mod-DecheGamevui/releases" target="_blank" class="btn btn-primary" style="margin-top: 12px; width: 100%; justify-content: center;">
+              <i class="fa-brands fa-android"></i> Tải File APK (Android)
+            </a>
+          </div>
+
+          <!-- PC & Standalone -->
+          <div class="download-option">
+            <div>
+              <i class="fa-solid fa-desktop icon"></i>
+              <h4 style="font-size: 17px; margin-top: 10px;">Bản Cài Đặt PC (Windows)</h4>
+              <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Chạy trực tiếp với Flash Player Projector chuẩn nét, không giật lag, hỗ trợ offline 100%.</p>
+            </div>
+
+            <a href="https://github.com/Dragon9468/Mod-DecheGamevui/releases" target="_blank" class="btn btn-glass" style="justify-content: center;">
+              <i class="fa-brands fa-windows"></i> Tải Bản Windows (EXE)
+            </a>
+
+            <div style="border-top: 1px solid var(--border); padding-top: 12px; margin-top: auto;">
+              <a href="games/deche/imperium_modded.swf" download="imperium_modded.swf" class="btn btn-glass" style="width: 100%; justify-content: center; font-size: 12px;">
+                <i class="fa-solid fa-file-arrow-down"></i> Tải SWF Gốc (1.7MB)
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2026 <strong>PGame</strong> - Hệ sinh thái Web Game kinh điển Việt Nam. Thuộc sở hữu của <a href="https://dragon9468.com" target="_blank">dragon9468.com</a>.</p>
+    <p style="margin-top: 6px; font-size: 12px; color: #64748b;">Vận hành mượt mà trên Cloudflare Pages & GitHub. Tận hưởng trọn vẹn kỷ nguyên Flash & Zing Me revival.</p>
+  </footer>
+
+  <script>
+    // Game registry
+    const GAMES = {
+      deche: {
+        title: "Đế Chế GameVui (The Imperium Remake)",
+        swf: "games/deche/imperium_modded.swf"
+      }
+    };
+
+    let currentGameKey = null;
+    let ruffleInstance = null;
+
+    // Load Ruffle
+    window.RufflePlayer = window.RufflePlayer || {};
+    window.addEventListener("DOMContentLoaded", () => {
+      const ruffle = window.RufflePlayer.newest();
+      ruffleInstance = ruffle;
+
+      // Update QR Code with real current host
+      const currentUrl = window.location.origin;
+      const qrImg = document.getElementById("qr-code-img");
+      if (qrImg) {
+        qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(currentUrl)}`;
+      }
+    });
+
+    function openGame(gameKey) {
+      const game = GAMES[gameKey];
+      if (!game) return;
+
+      currentGameKey = gameKey;
+      document.getElementById("modal-game-title").innerText = game.title;
+      document.getElementById("player-modal").classList.add("active");
+
+      const container = document.getElementById("game-canvas-container");
+      container.innerHTML = "";
+
+      const player = ruffleInstance.createPlayer();
+      player.style.width = "100%";
+      player.style.height = "100%";
+      container.appendChild(player);
+
+      player.load({
+        url: game.swf,
+        letterbox: "on",
+        autoplay: "auto",
+        unmuteOverlay: "hidden",
+        scale: "showAll"
+      });
+    }
+
+    function closeGameModal() {
+      document.getElementById("player-modal").classList.remove("active");
+      const container = document.getElementById("game-canvas-container");
+      container.innerHTML = "";
+      currentGameKey = null;
+    }
+
+    function reloadCurrentGame() {
+      if (currentGameKey) {
+        openGame(currentGameKey);
+      }
+    }
+
+    function toggleFullscreen() {
+      const container = document.querySelector(".player-frame");
+      if (!document.fullscreenElement) {
+        container.requestFullscreen().catch(err => alert("Không thể bật fullscreen: " + err.message));
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // Download Modal Logic
+    function openDownloadModal(gameKey) {
+      document.getElementById("download-modal").classList.add("active");
+    }
+
+    function closeDownloadModal() {
+      document.getElementById("download-modal").classList.remove("active");
+    }
+
+    // PWA Installation
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const pwaBtn = document.getElementById('pwa-install-btn');
+      if (pwaBtn) pwaBtn.style.display = 'inline-flex';
+    });
+
+    function installPWA() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted the PWA prompt');
+          }
+          deferredPrompt = null;
+        });
+      }
+    }
+
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW registration failed:', err));
+      });
+    }
+  </script>
+</body>
+</html>
