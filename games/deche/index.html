@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Đế Chế GameVui (The Imperium Remake) | PGame</title>
   <link rel="icon" type="image/png" href="icon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script>
     window.RufflePlayer = window.RufflePlayer || {};
     window.RufflePlayer.config = {
@@ -35,7 +36,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
     #player-wrap {
       width: 100%;
@@ -57,51 +58,66 @@
     ruffle-player canvas {
       image-rendering: auto !important;
     }
-    .back-btn {
+    .web-exit-btn {
       position: absolute;
       top: 14px;
       left: 14px;
-      z-index: 100;
-      background: rgba(17, 24, 39, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      z-index: 1000;
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       color: #fff;
-      padding: 8px 16px;
+      padding: 9px 18px;
       border-radius: 99px;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
       text-decoration: none;
-      backdrop-filter: blur(8px);
-      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.5);
+      transition: all 0.2s ease;
     }
-    .back-btn:hover {
-      background: rgba(99, 102, 241, 0.9);
-      transform: translateY(-1px);
+    .web-exit-btn:hover {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.7);
     }
     .fullscreen-btn {
       position: absolute;
       top: 14px;
       right: 14px;
-      z-index: 100;
+      z-index: 1000;
       background: rgba(17, 24, 39, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.2);
       color: #fff;
-      padding: 8px 16px;
+      padding: 9px 18px;
       border-radius: 99px;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
-      backdrop-filter: blur(8px);
-      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      transition: all 0.2s ease;
     }
     .fullscreen-btn:hover {
-      background: rgba(244, 63, 94, 0.9);
-      transform: translateY(-1px);
+      background: rgba(99, 102, 241, 0.9);
+      transform: translateY(-2px);
     }
   </style>
 </head>
 <body>
-  <a href="/" class="back-btn">← Về PGame</a>
-  <button class="fullscreen-btn" onclick="toggleFs()">⛶ Toàn Màn Hình</button>
+  <!-- Web-Level Exit Button Back to Main Portal -->
+  <a href="/" class="web-exit-btn">
+    <i class="fa-solid fa-arrow-left"></i> Thoát Game (Về Trang Chủ)
+  </a>
+  <button class="fullscreen-btn" onclick="toggleFs()">
+    <i class="fa-solid fa-expand"></i> Toàn Màn Hình
+  </button>
+
   <div id="player-wrap"></div>
 
   <script>
