@@ -17,7 +17,21 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
-  <!-- Ruffle Flash WASM Player CDN -->
+  <!-- Ruffle Flash WASM Config & CDN -->
+  <script>
+    window.RufflePlayer = window.RufflePlayer || {};
+    window.RufflePlayer.config = {
+      letterbox: "on",
+      quality: "high",
+      scale: "showAll",
+      forceScale: true,
+      wmode: "opaque",
+      autoplay: "on",
+      unmuteOverlay: "hidden",
+      splashScreen: false,
+      allowScriptAccess: true
+    };
+  </script>
   <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
 
   <style>
@@ -532,6 +546,13 @@
     #game-canvas-container ruffle-player {
       width: 100% !important;
       height: 100% !important;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+      transform: translateZ(0);
+    }
+
+    #game-canvas-container ruffle-player canvas {
+      image-rendering: auto !important;
     }
 
     .player-controls {
@@ -922,11 +943,14 @@
       container.appendChild(player);
 
       player.load({
-        url: game.swf,
+        url: game.swf + "?v=" + Date.now(),
         letterbox: "on",
-        autoplay: "auto",
+        quality: "high",
+        autoplay: "on",
         unmuteOverlay: "hidden",
-        scale: "showAll"
+        scale: "showAll",
+        forceScale: true,
+        wmode: "opaque"
       });
     }
 

@@ -5,6 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Đế Chế GameVui (The Imperium Remake) | PGame</title>
   <link rel="icon" type="image/png" href="icon.png">
+  <script>
+    window.RufflePlayer = window.RufflePlayer || {};
+    window.RufflePlayer.config = {
+      letterbox: "on",
+      quality: "high",
+      scale: "showAll",
+      forceScale: true,
+      wmode: "opaque",
+      autoplay: "on",
+      unmuteOverlay: "hidden",
+      splashScreen: false,
+      allowScriptAccess: true
+    };
+  </script>
   <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
   <style>
     * {
@@ -21,7 +35,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-family: sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
     }
     #player-wrap {
       width: 100%;
@@ -36,6 +50,12 @@
     ruffle-player {
       width: 100% !important;
       height: 100% !important;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+      transform: translateZ(0);
+    }
+    ruffle-player canvas {
+      image-rendering: auto !important;
     }
     .back-btn {
       position: absolute;
@@ -51,30 +71,62 @@
       font-weight: 600;
       text-decoration: none;
       backdrop-filter: blur(8px);
-      transition: background 0.2s;
+      transition: all 0.2s;
     }
     .back-btn:hover {
       background: rgba(99, 102, 241, 0.9);
+      transform: translateY(-1px);
+    }
+    .fullscreen-btn {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 100;
+      background: rgba(17, 24, 39, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all 0.2s;
+    }
+    .fullscreen-btn:hover {
+      background: rgba(244, 63, 94, 0.9);
+      transform: translateY(-1px);
     }
   </style>
 </head>
 <body>
   <a href="/" class="back-btn">← Về PGame</a>
+  <button class="fullscreen-btn" onclick="toggleFs()">⛶ Toàn Màn Hình</button>
   <div id="player-wrap"></div>
 
   <script>
-    window.RufflePlayer = window.RufflePlayer || {};
+    function toggleFs() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => alert(err.message));
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
     window.addEventListener("DOMContentLoaded", () => {
       const ruffle = window.RufflePlayer.newest();
       const player = ruffle.createPlayer();
       document.getElementById("player-wrap").appendChild(player);
 
       player.load({
-        url: "imperium_modded.swf",
+        url: "imperium_modded.swf?v=" + Date.now(),
         letterbox: "on",
-        autoplay: "auto",
+        quality: "high",
+        autoplay: "on",
         unmuteOverlay: "hidden",
-        scale: "showAll"
+        scale: "showAll",
+        forceScale: true,
+        wmode: "opaque"
       });
     });
   </script>
