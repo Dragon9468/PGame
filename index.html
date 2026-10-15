@@ -1089,7 +1089,33 @@
         </div>
       </div>
 
-      <!-- Game 2: Nông Trại Vui Vẻ Remake (Coming Soon) -->
+      <!-- Game 2: Mod Đảo Rồng (Active) -->
+      <div class="game-card-compact" data-cat="farm zingme rpg strategy">
+        <span class="status-badge-corner" style="background: linear-gradient(135deg, #f59e0b, #d97706);">Hoạt động</span>
+        <div class="game-logo-btn" onclick="openGame('daorong')" title="Bấm vào Logo để chơi ngay Đảo Rồng!">
+          <img src="games/daorong/icon.png" alt="Mod Đảo Rồng">
+          <div class="play-badge-hover">
+            <div class="play-icon-glow" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">
+              <i class="fa-solid fa-dragon"></i>
+            </div>
+            <span class="play-text-glow">CHƠI NGAY</span>
+          </div>
+        </div>
+        <div class="card-info-brief">
+          <h4 class="title">Mod Đảo Rồng</h4>
+          <span class="meta">Nuôi Thú • Zing Me</span>
+        </div>
+        <div class="card-bottom-actions">
+          <button class="btn-compact btn-down" onclick="openDownloadModal('daorong')">
+            <i class="fa-solid fa-download"></i> Tải xuống
+          </button>
+          <button class="btn-compact btn-desc" onclick="openGameInfoModal('daorong')">
+            <i class="fa-solid fa-circle-info"></i> Thông tin
+          </button>
+        </div>
+      </div>
+
+      <!-- Game 3: Nông Trại Vui Vẻ Remake (Coming Soon) -->
       <div class="game-card-compact" data-cat="farm zingme">
         <span class="status-badge-corner coming-soon">Sắp ra mắt</span>
         <div class="game-logo-btn" onclick="openGameInfoModal('farm')" title="Xem thông tin Nông Trại Vui Vẻ">
@@ -1336,6 +1362,26 @@
           "Chuột trái: Chọn công trình, kéo thả xây dựng và nâng cấp"
         ]
       },
+      daorong: {
+        id: "daorong",
+        title: "Mod Đảo Rồng (Dragon Island Online)",
+        category: "Nuôi Thú • Zing Me • Chiến Đấu",
+        icon: "games/daorong/icon.png",
+        url: "games/daorong/index.html",
+        github: "https://github.com/Dragon9468/Mod-Dao-Rong/releases",
+        desc: "Tái hiện huyền thoại nuôi rồng, lai tạo giống và chiến đấu theo lượt kinh điển thời Zing Me. Hỗ trợ chơi trực tiếp trên web, kết nối P2P cùng bạn bè, chăm sóc đảo và so tài lôi đài rồng.",
+        features: [
+          { title: "Nuôi Rồng & 4 Giai Đoạn Tiến Hóa", desc: "Từ trứng nở ra rồng con, thiếu niên, trưởng thành và Siêu Cấp Rồng Thần." },
+          { title: "Động Lai Giống Thần Bí", desc: "Lai tạo ngũ hành để khám phá hơn 19 loài rồng quý hiếm và Thần Long Hoàng Kim." },
+          { title: "Đấu Trường Chiến Đấu Turn-based", desc: "Tương sinh tương khắc nguyên tố, thanh Nộ Long và chiêu thức bùng nổ." },
+          { title: "Chơi Cùng Bạn Bè Trực Tuyến", desc: "Tạo phòng WebRTC, chia sẻ link mời bạn bè thăm đảo và PvP thời gian thực." }
+        ],
+        controls: [
+          "Chuột / Chạm: Tương tác với chuồng rồng, nông trại, ổ ấp và động lai",
+          "Nút Bạn Bè: Tạo phòng hoặc nhập mã để thi đấu PvP trực tiếp cùng bạn bè",
+          "Nút Lưu Trữ: Xuất/nhập mã sao lưu save game tiện lợi"
+        ]
+      },
       farm: {
         id: "farm",
         title: "Nông Trại Vui Vẻ (Happy Farm)",
@@ -1412,8 +1458,13 @@
     // Launch Game directly
     function openGame(gameKey) {
       const game = GAMES[gameKey];
-      if (!game || !game.swf) {
+      if (!game || (!game.swf && !game.url)) {
         openGameInfoModal(gameKey);
+        return;
+      }
+
+      if (game.url) {
+        window.location.href = game.url;
         return;
       }
 
@@ -1499,7 +1550,7 @@
         `;
       }
 
-      const isPlayable = Boolean(game.swf);
+      const isPlayable = Boolean(game.swf || game.url);
       body.innerHTML = `
         <div class="info-header">
           <img src="${game.icon}" alt="${game.title}">
@@ -1544,6 +1595,11 @@
     function openDownloadModal(gameKey) {
       const game = GAMES[gameKey] || GAMES.deche;
       document.getElementById("down-game-title").innerText = game.title;
+      const releaseLink = game.github || "https://github.com/Dragon9468/Mod-DecheGamevui/releases";
+      const winBtn = document.querySelector("#download-modal .download-option a.btn-glass");
+      if (winBtn) winBtn.href = releaseLink;
+      const apkBtn = document.getElementById("apk-download-btn");
+      if (apkBtn) apkBtn.href = releaseLink;
       document.getElementById("download-modal").classList.add("active");
     }
 
