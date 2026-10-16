@@ -1,19 +1,12 @@
-const CACHE_NAME = 'pgame-cache-v2';
+const CACHE_NAME = 'pgame-cache-v4';
 const urlsToCache = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/icon.png',
-  '/games/deche/imperium_modded.swf',
-  '/games/deche/icon.png'
+  '/icon.png'
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(urlsToCache).catch(err => console.log('Cache addAll error:', err));
-    })
-  );
   self.skipWaiting();
 });
 
@@ -32,10 +25,17 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
+// Network-first for fresh game updates, fallback to cache if offline
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
-    })
+    fetch(event.request)
+      .then(response => {
+        if (response && response.status === 200 && event.request.method === 'GET') {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        }
+        return response;
+      })
+      .catch(() => caches.match(event.request))
   );
 });
