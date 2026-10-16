@@ -1,5 +1,11 @@
-.DS_Store
-Thumbs.db
+# Dependencies
 node_modules/
-dist/
+.DS_Store
 *.log
+Thumbs.db
+
+# Private Cloudflare R2 Credentials & upload temp scripts
+upload_to_r2.py
+generate_audio.py
+.env
+.env.local
