@@ -9,3 +9,6 @@ upload_to_r2.py
 generate_audio.py
 .env
 .env.local
+
+# Heavy media assets hosted on Cloudflare R2
+games/daorong/assets/audio/
