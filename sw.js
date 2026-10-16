@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pgame-cache-v5';
+const CACHE_NAME = 'pgame-cache-v6';
 const urlsToCache = [
   '/',
   '/index.html',
